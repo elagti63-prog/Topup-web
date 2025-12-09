@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TopUp Game Center</title>
+<style>
+    body { font-family: Arial; background: #f0f0f0; margin: 0; padding: 0; }
+    header { text-align: center; background: #4a59ff; color: white; padding: 20px; }
+    .container { max-width: 600px; margin: 30px auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h2 { margin-top: 25px; }
+    select, input { width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: 1px solid #ccc; }
+    .nominal-list button, #btnNext, #btnBuyCoin { padding: 10px 15px; margin: 8px; border: none; background: #4a59ff; color: white; border-radius: 8px; cursor: pointer; }
+    .nominal-list button:hover, #btnNext:hover, #btnBuyCoin:hover { background: #3747d8; }
+    #checkoutPage { display: none; }
+    #output { margin-top: 20px; padding: 15px; background: #e7ffe7; border-left: 5px solid green; }
+    footer { text-align: center; padding: 20px; background: #ddd; margin-top: 30px; }
+    .admin-list a { display: inline-block; margin: 5px 10px; padding: 10px 15px; background: #25d366; color: white; border-radius: 8px; text-decoration: none; }
+    .admin-list a:hover { background: #128c7e; }
+</style>
+</head>
+<body>
+
+<header>
+<h1>TopUp Game Center</h1>
+<p>Topup cepat, aman, dan terpercaya!</p>
+</header>
+
+<div class="container" id="mainPage">
+    <h2>Pilih Game</h2>
+    <select id="gameSelect">
+        <option value="" disabled selected>-- Pilih Game --</option>
+        <option value="Mobile Legends">Mobile Legends</option>
+        <option value="Free Fire">Free Fire</option>
+        <option value="PUBG Mobile">PUBG Mobile</option>
+        <option value="Genshin Impact">Genshin Impact</option>
+    </select>
+
+    <h2>Pilih Nominal Topup</h2>
+    <div class="nominal-list">
+        <button onclick="pilihNominal(10,3)">10 Diamonds / 3 koin</button>
+        <button onclick="pilihNominal(20,5)">20 Diamonds / 5 koin</button>
+        <button onclick="pilihNominal(50,6)">50 Diamonds / 6 koin</button>
+        <button onclick="pilihNominal(100,8)">100 Diamonds / 8 koin</button>
+        <button onclick="pilihNominal(200,15)">200 Diamonds / 15 koin</button>
+    </div>
+
+    <h2>Masukkan ID Game</h2>
+    <input type="text" id="userId" placeholder="Masukkan User ID">
+
+    <p>Koin Anda: <span id="userCoinDisplay"></span></p>
+
+    <button id="btnNext" onclick="gotoCheckout()">Lanjut ke Checkout</button>
+</div>
+
+<div class="container" id="checkoutPage">
+    <h2>Checkout</h2>
+    <div id="orderDetails"></div>
+    <p>Koin yang dibutuhkan: <span id="coinAmount"></span> koin</p>
+    <button id="btnBuyCoin" onclick="buyCoin()">Beli Sekarang</button>
+    <div id="output"></div>
+</div>
+
+<footer>
+<p>Hubungi Admin WA:</p>
+<div class="admin-list">
+    <a href="https://wa.me/+60119619445" target="_blank">Admin 1: 0119619445</a>
+    <a href="https://wa.me/+610189619445" target="_blank">Admin 2: 0189619445</a>
+</div>
+</footer>
+
+<script>
+let selectedNominal = null;
+let selectedCoins = 0;
+let selectedGame = '';
+let userId = '';
+let userCoins = 1; // koin awal
+
+const admins = [
+    {name: "Admin 1", wa: "+60119619445"},
+    {name: "Admin 2", wa: "+60189619445"}
+];
+
+document.getElementById("userCoinDisplay").textContent = userCoins;
+
+function pilihNominal(nominal, coins) {
+    selectedNominal = nominal;
+    selectedCoins = coins;
+    alert("Nominal dipilih: " + nominal + " Diamonds / " + coins + " koin");
+}
+
+function gotoCheckout() {
+    selectedGame = document.getElementById("gameSelect").value;
+    userId = document.getElementById("userId").value;
+
+    if (!selectedGame || !selectedNominal || !userId) {
+        alert("Harap isi semua data!");
+        return;
+    }
+
+    document.getElementById("mainPage").style.display = "none";
+    document.getElementById("checkoutPage").style.display = "block";
+
+    const randomAdmin = admins[Math.floor(Math.random() * admins.length)];
+
+    document.getElementById("orderDetails").innerHTML = `
+        <p>Game: <b>${selectedGame}</b></p>
+        <p>Nominal: <b>${selectedNominal} Diamonds</b></p>
+        <p>User ID: <b>${userId}</b></p>
+        <p>Hubungi <b>${randomAdmin.name}</b> untuk proses pembayaran:</p>
+        <a href="https://wa.me/${randomAdmin.wa}" target="_blank">
+            <button style="padding:10px 20px; background:#25d366; color:white; border:none; border-radius:8px;">
+                Chat ${randomAdmin.name}
+            </button>
+        </a>
+    `;
+
+    document.getElementById("coinAmount").textContent = selectedCoins;
+}
+
+function buyCoin() {
+    if (userCoins >= selectedCoins) {
+        userCoins -= selectedCoins;
+        document.getElementById("userCoinDisplay").textContent = userCoins;
+        document.getElementById("output").innerHTML = "<p>Selamat, anda telah membeli dari web ini. Ss bukti ke admin dan tunggu invoicenya 5 menit</p>";
+    } else {
+        alert("Koin anda tidak cukup. Silahkan hubungi admin untuk menambah koin.");
+    }
+}
+</script>
+
+</body>
+</html>
